@@ -513,6 +513,7 @@ impl Interface {
         let mut processed_any = false;
 
         while let Some((rx_token, tx_token)) = device.receive(self.inner.now) {
+            rx_token.preprocess(sockets);
             let rx_meta = rx_token.meta();
             rx_token.consume(|frame| {
                 if frame.is_empty() {
