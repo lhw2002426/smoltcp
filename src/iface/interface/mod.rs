@@ -52,6 +52,8 @@ use crate::rand::Rand;
 use crate::socket::*;
 use crate::time::{Duration, Instant};
 
+use log::debug;
+
 use crate::wire::*;
 
 macro_rules! check {
@@ -412,6 +414,7 @@ impl Interface {
     {
         self.inner.now = timestamp;
 
+        debug!("lhw debug in interface poll");
         #[cfg(feature = "_proto-fragmentation")]
         self.fragments.assembler.remove_expired(timestamp);
 
@@ -511,7 +514,7 @@ impl Interface {
         D: Device + ?Sized,
     {
         let mut processed_any = false;
-
+        debug!("lhw debug in socket_ingress before receive");
         while let Some((rx_token, tx_token)) = device.receive(self.inner.now) {
             rx_token.preprocess(sockets);
             let rx_meta = rx_token.meta();
@@ -597,7 +600,8 @@ impl Interface {
             {
                 continue;
             }
-
+            
+            debug!("lhw debug in socket_egress before transmit");
             let mut neighbor_addr = None;
             let mut respond = |inner: &mut InterfaceInner, meta: PacketMeta, response: Packet| {
                 neighbor_addr = Some(response.ip_repr().dst_addr());

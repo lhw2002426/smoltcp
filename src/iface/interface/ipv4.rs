@@ -1,5 +1,7 @@
 use super::*;
 
+use log::debug;
+
 impl Interface {
     /// Process fragments that still need to be sent for IPv4 packets.
     ///
@@ -20,6 +22,7 @@ impl Interface {
             return false;
         }
 
+        debug!("lhw debug in ipv4_egress before transmit");
         let pkt = &self.fragmenter;
         if pkt.packet_len > pkt.sent_bytes {
             if let Some(tx_token) = device.transmit(self.inner.now) {
