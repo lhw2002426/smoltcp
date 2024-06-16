@@ -40,6 +40,7 @@ impl Answer {
         }
     }
 }
+use log::debug;
 
 /// A neighbor cache backed by a map.
 #[derive(Debug)]
@@ -60,6 +61,12 @@ impl Cache {
         Self {
             storage: LinearMap::new(),
             silent_until: Instant::from_millis(0),
+        }
+    }
+
+    pub fn debug_out(&self) {
+        for key in self.storage.keys() {
+            debug!("Key: {}", key);
         }
     }
 
