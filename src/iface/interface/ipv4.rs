@@ -1,6 +1,6 @@
 use super::*;
 
-use log::debug;
+use log::{debug, info};
 
 impl Interface {
     /// Process fragments that still need to be sent for IPv4 packets.
@@ -248,6 +248,10 @@ impl InterfaceInner {
             } => {
                 // Only process ARP packets for us.
                 if !self.has_ip_addr(target_protocol_addr) && !self.any_ip {
+                    info!("lhw debug in process_arp not has ip addr tar: {}",target_protocol_addr);
+                    for item in self.ip_addrs.iter() {
+                        debug!("self ip addr {:?}", item);
+                    }
                     return None;
                 }
 
@@ -268,6 +272,7 @@ impl InterfaceInner {
                     return None;
                 }
 
+                debug!("lhw debug before neighbor_cache fill {}, {}",source_protocol_addr, source_hardware_addr);
                 // Fill the ARP cache from any ARP packet aimed at us (both request or response).
                 // We fill from requests too because if someone is requesting our address they
                 // are probably going to talk to us, so we avoid having to request their address
