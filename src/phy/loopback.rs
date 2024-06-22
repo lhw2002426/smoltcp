@@ -1,5 +1,6 @@
 use alloc::collections::VecDeque;
 use alloc::vec::Vec;
+use log::debug;
 
 use crate::phy::{self, ChecksumCapabilities, Device, DeviceCapabilities, Medium};
 use crate::time::Instant;
@@ -40,6 +41,7 @@ impl Device for Loopback {
 
     fn receive(&mut self, _timestamp: Instant) -> Option<(Self::RxToken<'_>, Self::TxToken<'_>)> {
         self.queue.pop_front().map(move |buffer| {
+            debug!("lhw debug Received packet: {:X?}", buffer);
             let rx = RxToken { buffer };
             let tx = TxToken {
                 queue: &mut self.queue,
@@ -49,9 +51,12 @@ impl Device for Loopback {
     }
 
     fn transmit(&mut self, _timestamp: Instant) -> Option<Self::TxToken<'_>> {
-        Some(TxToken {
+        let tx = TxToken {
             queue: &mut self.queue,
-        })
+        };
+        
+        debug!("lhw debug Transmitting packet");
+        Some(tx)
     }
 }
 

@@ -974,6 +974,7 @@ impl InterfaceInner {
             .route(dst_addr, self.now)
             .ok_or(DispatchError::NoRoute)?;
 
+        debug!("lhw debug in loopup hardware addr debugout");
         self.neighbor_cache.debug_out();
         match self.neighbor_cache.lookup(&dst_addr, self.now) {
             NeighborAnswer::Found(hardware_addr) => return Ok((hardware_addr, tx_token)),

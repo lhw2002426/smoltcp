@@ -53,6 +53,7 @@ impl InterfaceInner {
         for cidr in self.ip_addrs.iter() {
             #[allow(irrefutable_let_patterns)] // if only ipv4 is enabled
             if let IpCidr::Ipv4(cidr) = cidr {
+                debug!("lhw debug in get_source_address_ipv4 {}, {}",_dst_addr, cidr.address());
                 return Some(cidr.address());
             }
         }
@@ -237,6 +238,7 @@ impl InterfaceInner {
     ) -> Option<EthernetPacket<'frame>> {
         let arp_packet = check!(ArpPacket::new_checked(eth_frame.payload()));
         let arp_repr = check!(ArpRepr::parse(&arp_packet));
+        debug!("lhw debug in process_arp");
 
         match arp_repr {
             ArpRepr::EthernetIpv4 {
