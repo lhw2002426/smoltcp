@@ -17,6 +17,8 @@ use crate::wire::{
     TCP_HEADER_LEN,
 };
 
+use log::debug;
+
 mod congestion;
 
 macro_rules! tcp_trace {
@@ -957,6 +959,7 @@ impl<'a> Socket<'a> {
     /// connection; only the remote end can close it. If you no longer wish to receive any
     /// data and would like to reuse the socket right away, use [abort](#method.abort).
     pub fn close(&mut self) {
+        debug!("lhw debug socket close");
         match self.state {
             // In the LISTEN state there is no established connection.
             State::Listen => self.set_state(State::Closed),
@@ -987,6 +990,7 @@ impl<'a> Socket<'a> {
     /// In terms of the TCP state machine, the socket may be in any state and is moved to
     /// the `CLOSED` state.
     pub fn abort(&mut self) {
+        debug!("lhw debug socket abort close");
         self.set_state(State::Closed);
     }
 
@@ -1693,6 +1697,7 @@ impl<'a> Socket<'a> {
             // RSTs in any other state close the socket.
             (_, TcpControl::Rst) => {
                 tcp_trace!("received RST");
+                debug!("lhw debug process RST close");
                 self.set_state(State::Closed);
                 self.tuple = None;
                 return None;
@@ -1844,6 +1849,7 @@ impl<'a> Socket<'a> {
             // ACK packets in LAST-ACK state change it to CLOSED.
             (State::LastAck, TcpControl::None) => {
                 if ack_of_fin {
+                    debug!("lhw debug process fin close");
                     // Clear the remote endpoint, or we'll send an RST there.
                     self.set_state(State::Closed);
                     self.tuple = None;
@@ -2168,6 +2174,7 @@ impl<'a> Socket<'a> {
         if self.timed_out(cx.now()) {
             // If a timeout expires, we should abort the connection.
             net_debug!("timeout exceeded");
+            debug!("lhw debug time out close");
             self.set_state(State::Closed);
         } else if !self.seq_to_transmit(cx) {
             if let Some(retransmit_delta) = self.timer.should_retransmit(cx.now()) {

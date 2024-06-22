@@ -601,10 +601,10 @@ impl Interface {
                 continue;
             }
             
-            debug!("lhw debug in socket_egress before transmit");
             let mut neighbor_addr = None;
             let mut respond = |inner: &mut InterfaceInner, meta: PacketMeta, response: Packet| {
                 neighbor_addr = Some(response.ip_repr().dst_addr());
+                debug!("lhw debug in socket_egress before transmit");
                 let t = device.transmit(inner.now).ok_or_else(|| {
                     net_debug!("failed to transmit IP: device exhausted");
                     EgressError::Exhausted
