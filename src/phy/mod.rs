@@ -43,7 +43,7 @@ impl phy::Device for StmPhy {
 
     fn receive(&mut self, _timestamp: Instant) -> Option<(Self::RxToken<'_>, Self::TxToken<'_>)> {
         Some((StmPhyRxToken(&mut self.rx_buffer[..]),
-              StmPhyTxToken(&mut self.tx_buffer[..])))
+              StmPhyTxToken(&mut self[..])))
     }
 
     fn transmit(&mut self, _timestamp: Instant) -> Option<Self::TxToken<'_>> {
